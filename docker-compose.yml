@@ -1,0 +1,48 @@
+version: "3"
+
+#NETWORK
+networks: 
+    my-network:
+        driver: bridge
+#VOLUMES
+
+#SERVICES
+services: 
+    #FE:Nodejs
+    fe-node:
+        container_name: fe-project
+        build:
+            dockerfile: Dockerfile
+            context: ./FE_Project
+        hostname: node
+        restart: always
+        networks: 
+            - my-network
+    #BE:Nodejs
+    be-node:
+        container_name: be-project
+        build:
+            dockerfile: Dockerfile
+            context: ./BE_Project
+        ports:
+            - "3200:3200"
+        hostname: node
+        restart: always
+        networks: 
+            - my-network
+    #MYSQL
+    my-sql:
+        container_name: mysql-product
+        image: "mysql:latest"
+        ports:
+            - "3306:3306"
+        hostname: mysql
+        restart: always
+        networks: 
+            - my-network
+        volumes: 
+            - ./db:/var/lib/mysql
+            - ./my.cnf:/etc/mysql/my.cnf
+        environment: 
+            - MYSQL_ROOT_PASSWORD=123
+            - MYSQL_DATABASE=db_project    
